@@ -1,6 +1,6 @@
 # coding=utf-8
 import os, json
-from dotenv import dotenv_values, load_dotenv
+from dotenv import load_dotenv, dotenv_values
 load_dotenv()
 
 from flask import Flask, jsonify
