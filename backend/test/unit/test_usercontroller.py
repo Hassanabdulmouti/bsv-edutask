@@ -1,4 +1,5 @@
 import pytest
+pytestmark = pytest.mark.unit  
 from unittest.mock import MagicMock
 from src.controllers.usercontroller import UserController
 
