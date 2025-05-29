@@ -25,7 +25,7 @@ def test_get_user_by_email_empty_string(controller):
     with pytest.raises(ValueError):
         controller.get_user_by_email('')
 
-def test_get_user_by_email_case_insensitive(controller, mock_dao):
+def test_get_user_by_email_case_sensitive(controller, mock_dao):
     mock_dao.find.return_value = [{'email': 'Test@Example.Com'}]
     result = controller.get_user_by_email('Test@Example.Com')
     assert result['email'] == 'Test@Example.Com'
