@@ -73,12 +73,10 @@ def test_create_duplicate_unique_field(test_dao):
     data1 = {"name": "jane doe", "email": "duplicate@mail.com"}
     data2 = {"name": "john doe", "email": "duplicate@mail.com"}
 
-    created1 = test_dao.create(data1)
+    test_dao.create(data1)
 
-    created2 = test_dao.create(data2)
-
-    assert created1["email"] == created2["email"]
-    assert created1["_id"] != created2["_id"]
+    with pytest.raises(WriteError):
+        test_dao.create(data2)
 
 
 
