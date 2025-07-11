@@ -2,16 +2,52 @@ describe('R8UC2 - Toggle Todo Item Done/Active', () => {
   let uid;
   let name;
 
-  before(function () {
-    cy.fixture('user.json').then((user) => {
+
+  beforeEach(function () {
+    cy.request({
+      method: 'POST',
+      url: 'http://localhost:5050/users/create',
+      form: true,
+      body: {
+        firstName: 'Mon',
+        lastName: 'Doe',
+        email: 'mon.doe@gmail.com'
+      }
+    }).then((res) => {
+      uid = res.body._id.$oid;
+      cy.log('User created with ID:', uid);
       cy.request({
         method: 'POST',
-        url: 'http://localhost:5050/users/create',
+        url: 'http://localhost:5050/tasks/create',
         form: true,
-        body: user
+        body: {
+          userid: uid,
+          title: 'My tasks for today',
+          description: 'My tasks for today',
+          url: 'https://www.youtube.com/watch?v=O6P86uwfdR0',
+          todos: 'Watch video'
+        }
       }).then((res) => {
-        uid = res.body._id.$oid;
-        name = user.firstName + " " + user.lastName;
+        cy.log(JSON.stringify(res.body));
+      }).then((res) => {
+        cy.visit('http://localhost:3000');
+        cy.get('h1')
+          .should('contain.text', 'Login');
+
+        cy.get('.inputwrapper #email')
+          .type('mon.doe@gmail.com');
+
+        cy.get('form')
+          .submit();
+
+        cy.get('h1')
+          .should('contain.text', 'Your tasks, Mon Doe');
+
+        cy.get('.container-element')
+          .should('contain.text', 'My tasks for today');
+
+        cy.contains('My tasks for today')
+          .click();
       });
     });
   });
