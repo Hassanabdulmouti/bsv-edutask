@@ -1,50 +1,54 @@
 describe('R8UC1 - Add Todo Item to Task', () => {
   let uid;
-  let name;
 
-  before(function () {
-    cy.fixture('user.json').then((user) => {
-      cy.request({
-        method: 'POST',
-        url: 'http://localhost:5050/users/create',
-        form: true,
-        body: user
-      }).then((res) => {
-        uid = res.body._id.$oid;
-        name = user.firstName + " " + user.lastName;
-      });
-    });
-  });
 
   beforeEach(function () {
-    cy.visit('http://localhost:3000')
+    cy.request({
+      method: 'POST',
+      url: 'http://localhost:5050/users/create',
+      form: true,
+      body: {
+        firstName: 'Mon',
+        lastName: 'Doe',
+        email: 'mon.doe@gmail.com'
+      }
+    }).then((res) => {
+      uid = res.body._id.$oid;
+      cy.log('User created with ID:', uid);
+      cy.request({
+        method: 'POST',
+        url: 'http://localhost:5050/tasks/create',
+        form: true,
+        body: {
+          userid: uid,
+          title: 'My tasks for today',
+          description: 'My tasks for today',
+          url: 'https://www.youtube.com/watch?v=O6P86uwfdR0',
+          todos: 'Watch video'
+        }
+      }).then((res) => {
+        cy.log(JSON.stringify(res.body));
+      }).then((res) => {
+        cy.visit('http://localhost:3000');
+        cy.get('h1')
+          .should('contain.text', 'Login');
 
-    cy.get('h1')
-      .should('contain.text', 'Login')
+        cy.get('.inputwrapper #email')
+          .type('mon.doe@gmail.com');
 
-    cy.get('.inputwrapper #email')
-      .type('mon.doe@gmail.com')
+        cy.get('form')
+          .submit();
 
-    cy.get('form')
-      .submit()
+        cy.get('h1')
+          .should('contain.text', 'Your tasks, Mon Doe');
 
-    cy.get('h1')
-      .should('contain.text', 'Your tasks, Mon Doe')
+        cy.get('.container-element')
+          .should('contain.text', 'My tasks for today');
 
-    cy.get('.inputwrapper #title')
-      .type(`My tasks for today`)
-
-    cy.get('.inputwrapper #url')
-      .type('https://www.youtube.com/watch?v=O6P86uwfdR0')
-
-    cy.get('form')
-      .submit()
-
-    cy.get('.container-element')
-      .should('contain.text', 'My tasks for today')
-
-    cy.contains('My tasks for today')
-      .click()
+        cy.contains('My tasks for today')
+          .click();
+      });
+    });
   });
 
   it('R8UC1-TC1: creates a new todo item when the description field is not empty', () => {
