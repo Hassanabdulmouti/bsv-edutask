@@ -10,7 +10,9 @@
  
   beforeEach(() => {
     const email = `mon.doe${Date.now()}@example.com`;
-    cy.wrap(email).as('email');           
+    cy.wrap(email).as('email');         
+    
+    
 
     cy.request({
       method: 'POST',
