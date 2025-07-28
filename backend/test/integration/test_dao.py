@@ -50,9 +50,7 @@ def test_create_success(test_dao):
     data = {"name": "jane doe", "email": "jane.doe@mail.com"}
     created = test_dao.create(data)
 
-    assert created["name"] == data["name"]
-    assert created["email"] == data["email"]
-    assert "_id" in created
+    assert created["name"] == data["name"] and created["email"] == data["email"] and "_id" in created
 
 
 def test_create_missing_required_field(test_dao):
